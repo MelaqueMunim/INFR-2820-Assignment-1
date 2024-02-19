@@ -1,0 +1,106 @@
+import time
+
+class Product:
+    def __init__(self, ID, Name, Price, Category):
+        self.id = ID
+        self.name = Name
+        self.price = Price
+        self.category = Category
+        
+    def  __str__(self):
+        return "ID: {}, Name: {}, Price: {:.2f}, Category: {}".format(product.id,product.name, product.price, product.category)
+
+class ProductManager:
+    def __init__(self):
+        self.products = []
+        self.matching_products = []
+        
+    def load_products(self, product_data):
+        with open(product_data, "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                data_list = line.strip().split(', ')
+                self.products.append(Product(data_list[0], data_list[1], float(data_list[2]), data_list[3]))
+
+    def push_product(self, product):
+        if product not in self.products:
+            self.products.append(product)
+            print("Product has been added successfully")
+        else:
+            print("Error: Product already in cart")
+            
+    def update_product(self, ID, name="", price="", category=""):
+        for product in self.products:
+            if product.id == ID:
+                if name  !="":
+                    product.name = name
+                if price  !="":
+                    product.price = float(price)
+                if category != "":
+                    product.category = category
+                print("Update successful")
+                return
+        print("Error: Update unsuccessful")
+
+    def pop_product(self, ID):
+        for i, product in enumerate(self.products):
+            if product.id == ID:
+                self.products.pop(i)
+                print("{} has been deleted successfully".format(ID))
+                return
+        print("Error: Failed to delete product with ID {}".format(ID))
+            
+
+    def search_product(self, search_attribute):
+        self.matching_products=[]
+        try:
+            float_term = float(search_attribute)
+        except ValueError:
+            float_term = ""
+            
+        for product in self.products:
+            if search_attribute == product.name or search_attribute == product.id or search_attribute == product.category:
+                self.matching_products.append(product)
+            elif float_term !="" and float_term == product.price:
+                self.matching_products.append(product)
+        if self.matching_products:
+            for product in self.matching_products:
+                print(product)
+        else:
+            print("could not find searched attribute for product")
+
+        
+    def bubble_sort(self):
+        n = len(self.products)
+        for x in range(n-1):
+            for y in range(0, n-x-1):
+                if self.products[y].price > self.products[y+1].price:
+                    self.products[y], self.products[y+1] = self.products[y+1], self.products[y]
+    
+    def compare_times(self):
+        self.bubble_sort()
+        start_time = time.time()
+        self.bubble_sort()  
+        end_time = time.time()
+        time_sorted = end_time - start_time
+
+        
+        self.products.reverse()
+        start_time = time.time()
+        self.bubble_sort()
+        end_time = time.time()
+        rev_time = end_time - start_time
+        
+        print("Time to bubble sort already sorted data: {:.8f} seconds".format(time_sorted))
+        print("Time to bubble sort reversed sorted data: {:.8f} seconds".format(rev_time))
+
+
+    def print_products(self):
+        for product in self.products:
+            print("ID: {}, Name: {}, Price: {:.2f}, Category: {}".format(product.id,product.name, product.price, product.category))
+    
+            
+            
+        
+
+product_manager=ProductManager()
